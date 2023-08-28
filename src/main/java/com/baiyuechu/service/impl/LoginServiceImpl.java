@@ -1,5 +1,6 @@
 package com.baiyuechu.service.impl;
 
+import com.baiyuechu.dao.MenuMapper;
 import com.baiyuechu.domain.LoginUser;
 import com.baiyuechu.domain.ResponseResult;
 import com.baiyuechu.domain.User;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -23,6 +25,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private RedisCache redisCache;
+    @Autowired
+    private MenuMapper menuMapper;
     @Override
     public ResponseResult login(User user) {
         //AuthenticationManager authenticate进行用户认证
