@@ -20,6 +20,7 @@ public class HelloController {
     }
 
     @GetMapping("/testCors")
+    @PreAuthorize("@ex.hasAuthority('system:book:add')")
     public String testCors() {
         return "cors";
     }
