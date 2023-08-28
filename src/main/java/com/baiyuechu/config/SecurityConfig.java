@@ -1,6 +1,8 @@
 package com.baiyuechu.config;
 
 import com.baiyuechu.filter.JwtAuthenticationTokenFilter;
+import com.baiyuechu.handler.AccessDeniedHandlerImpl;
+import com.baiyuechu.handler.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -19,10 +23,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
 
 
     @Override
@@ -39,7 +49,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 
+        //增加过滤器
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+        //增加认证全局异常处理
+        //增加授权全局异常处理
+        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler);
+
     }
 
     /**
